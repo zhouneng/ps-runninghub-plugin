@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E_WinAI</title>
+    <link rel="stylesheet" href="./styles.css?v=20260703-sidebar-light-1" />
+  </head>
+  <body>
+    <div id="root">
+      <div class="app-shell">
+        <aside class="sidebar">
+          <div class="brand">
+            <span class="brand-mark"></span>
+            <h1 class="title">E_WinAI</h1>
+          </div>
+
+          <nav class="tabs" aria-label="功能模块">
+            <button class="tab-button active" type="button" data-tab="runninghub">AI 应用</button>
+            <button class="tab-button" type="button" data-tab="reverse">图像反推</button>
+            <button class="tab-button" type="button" data-tab="aip">图片生成</button>
+          </nav>
+        </aside>
+
+        <div class="workspace">
+        <header class="topbar">
+          <button id="account-status" class="account-status" type="button" title="点击刷新账户信息">
+            <span class="account-metric rh"><span class="account-icon">R</span><span id="account-coins">--</span></span>
+            <span class="account-divider"></span>
+            <span class="account-metric money"><span class="account-icon">￥</span><span id="account-money">--</span></span>
+            <span class="account-divider"></span>
+            <span class="account-metric tasks"><span>任务</span><span id="account-tasks">--</span></span>
+          </button>
+          <div class="connection-pill">
+            <span class="status-dot"></span>
+            <span>已连接</span>
+          </div>
+          <button id="open-settings" class="top-button" type="button">API 设置</button>
+        </header>
+
+        <main class="app">
+          <div id="tab-runninghub" class="tab-panel active">
+          <section class="panel">
+            <div class="section-title-row">
+              <h2>AI 应用</h2>
+              <span id="app-badge" class="app-badge">AI 应用</span>
+            </div>
+
+            <label for="webapp-id">RunningHub AppID</label>
+            <input id="webapp-id" type="text" placeholder="可粘贴完整网址或 AppID" autocomplete="off" />
+
+            <label for="app-name">应用名称</label>
+            <input id="app-name" type="text" placeholder="获取参数后自动填入" autocomplete="off" />
+
+            <label for="app-type">应用类型</label>
+            <input id="app-type" type="text" placeholder="获取参数后自动填入" readonly />
+
+            <div class="action-stack">
+              <button id="load-app-detail" class="secondary-button" type="button">获取应用参数</button>
+              <button id="save-app-config" class="secondary-button" type="button">保存当前应用</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>参数配置</h2>
+            <div id="params-empty" class="empty-state">先粘贴 AppID，然后点击“获取应用参数”。</div>
+            <div id="dynamic-params" class="dynamic-params"></div>
+          </section>
+
+          <section class="panel task-panel">
+            <div class="section-title-row">
+              <h2>任务</h2>
+              <span class="hint">费用以 RunningHub 为准</span>
+            </div>
+            <div class="action-stack">
+              <button id="run-task" class="primary-button" type="button">上传并生成</button>
+              <button id="query-task" class="secondary-button" type="button">查询结果</button>
+            </div>
+            <div class="status-card">
+              <span id="status-dot" class="status-dot"></span>
+              <span id="status" class="status">准备就绪。</span>
+            </div>
+          </section>
+
+          <section id="result" class="panel result">
+            <h2>结果预览</h2>
+            <div class="preview-wrap">
+              <img id="preview" class="preview" alt="" />
+              <button id="zoom-preview" class="preview-zoom-button" type="button">放大查看</button>
+            </div>
+            <input id="result-url" type="text" readonly />
+            <div class="action-stack">
+              <button id="import-result" class="primary-button" type="button">下载结果</button>
+              <button id="open-result" class="secondary-button" type="button">新标签打开</button>
+              <button id="copy-result-url" class="secondary-button" type="button">复制链接</button>
+              <button id="open-url" class="secondary-button" type="button">浏览器查看</button>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>历史记录</h2>
+            <div id="history-list" class="history-list"></div>
+            <button id="clear-history" class="secondary-button" type="button">清空历史</button>
+          </section>
+          </div>
+
+          <div id="tab-reverse" class="tab-panel">
+            <section class="panel">
+              <div class="section-title-row">
+                <h2>图像反推模块</h2>
+                <span class="app-badge">静态占位，待接入核心内容</span>
+              </div>
+              <div class="module-placeholder">
+                <div class="drop-zone static-drop-zone">
+                  <button class="pick-image-button" type="button">选择参考图片</button>
+                  <div class="drop-hint">后续支持拖拽、粘贴图片并生成反推提示词</div>
+                </div>
+              </div>
+              <label for="reverse-style">反推方向</label>
+              <select id="reverse-style">
+                <option>通用文生图提示词</option>
+                <option>商业摄影提示词</option>
+                <option>电商海报提示词</option>
+                <option>人物写真提示词</option>
+              </select>
+              <label for="reverse-output">反推结果</label>
+              <textarea id="reverse-output" placeholder="这里将显示图像反推后的提示词、风格拆解和可复制参数。" readonly></textarea>
+              <div class="action-stack">
+                <button class="primary-button" type="button" disabled>开始反推</button>
+                <button class="secondary-button" type="button" disabled>复制结果</button>
+              </div>
+            </section>
+          </div>
+
+          <div id="tab-aip" class="tab-panel">
+            <section class="image-generator">
+              <div class="generator-box">
+                <div id="image-gen-reference-list" class="reference-list" aria-label="参考图列表">
+                  <button id="image-gen-ref-button" class="reference-card add-reference-card" type="button" title="选择参考图">
+                    <span id="image-gen-ref-plus">+</span>
+                  </button>
+                </div>
+                <div id="prompt-reference-chips" class="prompt-reference-chips" hidden></div>
+                <textarea id="image-gen-prompt" class="generator-prompt" placeholder="输入文字描述要生成的图片；也可以上传参考图进行图生图。"></textarea>
+                <div class="generator-toolbar">
+                  <select id="image-gen-model" class="tool-select" title="选择生图模型">
+                    <option value="nanobanano2">nanobanano2低价渠道版</option>
+                    <option value="chatgptimage2">ChatgptImage2低价渠道版</option>
+                  </select>
+                  <button id="aip-ratio-summary" class="tool-chip" type="button" data-open-generator-settings="ratio">9:16</button>
+                  <button id="aip-quality-summary" class="tool-chip" type="button" data-open-generator-settings="quality" data-resolution="2k">2K</button>
+                </div>
+                <div id="image-gen-file-name" class="generator-file-name">未选择参考图，将使用文生图模式</div>
+                <button id="image-gen-send" class="send-button" type="button">↑</button>
+              </div>
+
+              <div id="generator-settings" class="generator-settings" hidden>
+                <div class="settings-popover-head">
+                  <strong>生成参数</strong>
+                  <button id="close-generator-settings" class="popover-close" type="button">关闭</button>
+                </div>
+                <label>选择比例</label>
+                <div class="ratio-grid" id="aip-ratio-grid">
+                  <button class="ratio-option" type="button" data-ratio="智能" data-width="1440" data-height="1440">智能</button>
+                  <button class="ratio-option" type="button" data-ratio="21:9" data-width="2560" data-height="1080">21:9</button>
+                  <button class="ratio-option" type="button" data-ratio="16:9" data-width="2560" data-height="1440">16:9</button>
+                  <button class="ratio-option" type="button" data-ratio="3:2" data-width="2160" data-height="1440">3:2</button>
+                  <button class="ratio-option" type="button" data-ratio="4:3" data-width="1920" data-height="1440">4:3</button>
+                  <button class="ratio-option" type="button" data-ratio="1:1" data-width="1440" data-height="1440">1:1</button>
+                  <button class="ratio-option" type="button" data-ratio="3:4" data-width="1440" data-height="1920">3:4</button>
+                  <button class="ratio-option" type="button" data-ratio="2:3" data-width="1440" data-height="2160">2:3</button>
+                  <button class="ratio-option active" type="button" data-ratio="9:16" data-width="1440" data-height="2560">9:16</button>
+                </div>
+
+                <label>选择分辨率</label>
+                <div class="quality-toggle" id="aip-quality-toggle">
+                  <button class="quality-option" type="button" data-quality="1K" data-resolution="1k">标准 1K</button>
+                  <button class="quality-option active" type="button" data-quality="2K" data-resolution="2k">高清 2K</button>
+                  <button class="quality-option" type="button" data-quality="4K" data-resolution="4k">超清 4K</button>
+                </div>
+
+                <label>尺寸</label>
+                <div class="size-row">
+                  <div class="size-field"><span>W</span><strong id="aip-width">1440</strong></div>
+                  <span class="size-link">∞</span>
+                  <div class="size-field"><span>H</span><strong id="aip-height">2560</strong></div>
+                  <span class="size-unit">PX</span>
+                </div>
+              </div>
+
+              <div id="image-gen-result" class="result-placeholder image-gen-result">
+                <span id="image-gen-empty">生成结果预览区</span>
+                <img id="image-gen-result-img" class="image-gen-result-img" alt="" hidden />
+                <div class="image-result-tools" aria-label="图片操作">
+                  <button id="image-gen-zoom" class="image-tool-button zoom-tool" type="button" title="放大查看" disabled>⌕</button>
+                  <button id="image-gen-download" class="image-tool-button" type="button" title="下载图片" disabled>↓</button>
+                  <button id="image-gen-copy-image" class="image-tool-button" type="button" title="复制图片" disabled>▣</button>
+                  <button id="image-gen-copy" class="image-tool-button" type="button" title="复制图片链接" disabled>⛓</button>
+                </div>
+              </div>
+              <input id="image-gen-result-url" class="utility-hidden" type="text" readonly hidden />
+              <div id="image-gen-status" class="status-card utility-hidden">
+                <span class="status-dot"></span>
+                <span>输入提示词即可文生图；上传参考图后自动切换为图生图。</span>
+              </div>
+              <section class="image-history-panel">
+                <div class="history-dock">
+                  <div id="image-gen-history-list" class="image-history-list"></div>
+                  <button id="open-image-gallery" class="history-tab" type="button">
+                    <span>历史</span>
+                    <span id="image-history-count">0</span>
+                    <span class="history-caret">⌃</span>
+                  </button>
+                  <div class="history-popover">
+                    <button id="open-image-gallery-popover" class="history-open-button" type="button">打开相册</button>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </div>
+        </main>
+        </div>
+      </div>
+    </div>
+    <div id="settings-modal" class="modal" hidden>
+      <div class="modal-backdrop"></div>
+      <section class="modal-card">
+        <h2>API 设置</h2>
+        <label for="api-key">RunningHub API Key</label>
+        <input id="api-key" type="password" placeholder="粘贴你的 API Key" autocomplete="new-password" />
+        <input id="task-id" type="hidden" autocomplete="off" />
+
+        <div class="action-stack">
+          <button id="save-settings" class="primary-button" type="button">保存设置</button>
+          <button id="close-settings" class="secondary-button" type="button">关闭</button>
+        </div>
+      </section>
+    </div>
+    <div id="image-modal" class="image-modal" hidden>
+      <div class="modal-backdrop"></div>
+      <section class="image-modal-card">
+        <button id="close-image-modal" class="modal-close-button" type="button">关闭</button>
+        <div class="image-zoom-toolbar" aria-label="缩放控制">
+          <button id="zoom-out-image" class="image-zoom-button" type="button">−</button>
+          <span id="image-zoom-level" class="image-zoom-level">100%</span>
+          <button id="zoom-in-image" class="image-zoom-button" type="button">+</button>
+          <button id="zoom-reset-image" class="image-zoom-button reset" type="button">适应</button>
+        </div>
+        <img id="zoomed-preview" alt="" />
+      </section>
+    </div>
+    <div id="image-gallery-modal" class="image-gallery-modal" hidden>
+      <section class="image-gallery-shell">
+        <header class="image-gallery-head">
+          <div class="image-gallery-title">相册 <span id="image-gallery-count">0</span></div>
+          <input id="image-gallery-search" class="image-gallery-search" type="search" placeholder="搜索提示词..." />
+          <div class="image-gallery-actions">
+            <button id="gallery-view-timeline" class="gallery-view-button active" type="button">时间流</button>
+            <button id="gallery-view-cluster" class="gallery-view-button" type="button">聚合</button>
+            <button id="clear-image-history" class="gallery-view-button" type="button">清空</button>
+            <button id="close-image-gallery" class="gallery-close-button" type="button">×</button>
+          </div>
+        </header>
+        <main id="image-gallery-main" class="image-gallery-main">
+          <div id="image-gallery-content" class="image-gallery-content"></div>
+          <aside id="image-gallery-detail" class="image-gallery-detail">
+            <button id="close-gallery-detail" class="gallery-detail-close" type="button">×</button>
+            <div class="gallery-detail-empty">选择一条历史记录查看详情</div>
+          </aside>
+          <div id="image-gallery-filmstrip" class="image-gallery-filmstrip"></div>
+        </main>
+      </section>
+    </div>
+    <input id="web-file-picker" type="file" accept="image/png,image/jpeg,image/webp" hidden />
+    <input id="image-gen-file-picker" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden />
+    <script src="./main.js?v=20260703-sidebar-light-1"></script>
+  </body>
+</html>
